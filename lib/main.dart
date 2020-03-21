@@ -181,7 +181,7 @@ class _MyAppState extends State<MyApp> {
                             subtitle: Row(
                                     children: <Widget>[
                                       Icon(Icons.linear_scale, color: Colors.red),
-                                      Text("  ${snapshot.data.prop.vaalue1}",style: TextStyle(color:Colors.red),),
+                                      Text("  ${snapshot.data.pro.vaalue2}",style: TextStyle(color:Colors.red),),
                                     ],
                                   ),
                             
@@ -209,7 +209,7 @@ class _MyAppState extends State<MyApp> {
                             subtitle: Row(
                                     children: <Widget>[
                                       Icon(Icons.linear_scale, color: Colors.green),
-                                      Text("  ${snapshot.data.pro.vaalue2}",style: TextStyle(color:Colors.green),),
+                                      Text("  ${snapshot.data.prop.vaalue1}",style: TextStyle(color:Colors.green),),
                                     ],
                                   ),
                             ),

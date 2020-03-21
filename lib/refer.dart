@@ -262,7 +262,7 @@ class _SecondPageState extends State<SecondPage> {
   void initState() {
     super.initState();
      url="https://covid19.mathdro.id/api/countries/"+widget.datea;
-    futureAlbum = fetchAlbum();
+    
 
     
     
@@ -270,6 +270,7 @@ class _SecondPageState extends State<SecondPage> {
 
   @override
   Widget build(BuildContext context) {
+    futureAlbum = fetchAlbum();
     return  Scaffold(
           body: Container(
             decoration: BoxDecoration(color:Colors.black),
@@ -332,7 +333,7 @@ class _SecondPageState extends State<SecondPage> {
                               subtitle: Row(
                                       children: <Widget>[
                                         Icon(Icons.linear_scale, color: Colors.red),
-                                        Text("  ${snapshot.data.prop.vaalue1}",style: TextStyle(color:Colors.red),),
+                                        Text("  ${snapshot.data.pro.vaalue2}",style: TextStyle(color:Colors.red),),
                                       ],
                                     ),
                               
@@ -360,7 +361,7 @@ class _SecondPageState extends State<SecondPage> {
                               subtitle: Row(
                                       children: <Widget>[
                                         Icon(Icons.linear_scale, color: Colors.green),
-                                        Text("  ${snapshot.data.pro.vaalue2}",style: TextStyle(color:Colors.green),),
+                                        Text("  ${snapshot.data.prop.vaalue1}",style: TextStyle(color:Colors.green),),
                                       ],
                                     ),
                               ),
