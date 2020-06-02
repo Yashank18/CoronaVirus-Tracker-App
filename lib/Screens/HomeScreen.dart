@@ -144,6 +144,23 @@ class _HomeScreenState extends State<HomeScreen> {
                    ),
                  ),
                ),
+               
+             ],
+           ),
+
+           Column(
+             children: <Widget>[
+               Padding(
+                 padding: const EdgeInsets.all(18.0),
+                 child: Container(
+                   width: screenWidth*0.4,
+                   child: MaterialButton(
+                     onPressed: (){},
+                     color: Colors.blue,
+                     child: Text("State Data",style: GoogleFonts.varelaRound(color:Colors.white,fontSize: screenWidth*0.06),),
+                     ),
+                 ),
+               ),
              ],
            )
          ],
