@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -9,6 +13,70 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  String _countryName;
+  int _confirmedCases = 0;
+  int _recoverdCases = 0;
+
+  Future<Position> getUserCurrentLocation() async {
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    return position;
+  }
+
+  Future<String> getCountryNameFromLocation(Coordinates coordinates) async {
+    final location = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    return location.first.countryName;
+  }
+
+  void getCovidStats(String countryName) async {
+    String url = "https://api.covid19api.com/country/${countryName}";
+    final response = await http.get(url);
+    final parsed = json.decode(response.body);
+
+    List<CovidData> covid_data = (parsed as List).map((e) => new CovidData(
+        Active: e['Active'],
+        Confirmed: e['Confirmed'],
+        Country: e['Country'],
+        Date: e['Date'],
+        Deaths: e['Deaths'],
+        Recovered: e['Deaths']
+    )).toList();
+
+    int recover_sum = 0;
+    int active_sum = 0;
+    int affected_sum = 0;
+    int death_sum = 0;
+
+    covid_data.forEach((value) => recover_sum = recover_sum + value.Recovered);
+    covid_data.forEach((value) => active_sum = active_sum + value.Active);
+    covid_data.forEach((value) => affected_sum = affected_sum + value.Confirmed);
+    covid_data.forEach((value) => death_sum = death_sum + value.Deaths);
+
+    setState(() {
+      _recoverdCases = recover_sum;
+      _confirmedCases = active_sum;
+    });
+
+  }
+
+  void updateCountry() async {
+    Position position = await getUserCurrentLocation();
+    String countryName = await getCountryNameFromLocation(new Coordinates(position.latitude, position.longitude));
+    setState(() {
+      _countryName = countryName;
+    });
+
+    getCovidStats(countryName);
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateCountry();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -16,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: new AppBar(
         backgroundColor: Color.fromRGBO(217, 26, 77, 1),
-        title: Center(child: Text("Covid-19 | India",style: GoogleFonts.varelaRound(),)),
+        title: Center(child: Text("Covid-19 | ${_countryName}",style: GoogleFonts.varelaRound(),)),
       ),
       body: Container(
        child: ListView(
@@ -83,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                      color:Color.fromRGBO(217, 26, 77, 1),
                      borderRadius: BorderRadius.circular(20)
                    ),
-                   child: Text("India Report",style: GoogleFonts.amaticSc(fontSize: screenHeight*0.04,color: Colors.white,fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
+                   child: Text("${_countryName} Report",style: GoogleFonts.amaticSc(fontSize: screenHeight*0.04,color: Colors.white,fontWeight: FontWeight.w700),textAlign: TextAlign.center,),
                  ),
                ),
                Image.asset("Images/covidMap.png"),
@@ -108,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                            color: Colors.white,
                            child:Padding(
                              padding: const EdgeInsets.all(2.0),
-                             child: Text("200000",style: TextStyle(fontSize: screenWidth*0.04),),
+                             child: Text(_confirmedCases.toString() ,style: TextStyle(fontSize: screenWidth*0.04),),
                            )
                          ),
                        )
@@ -136,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                            color: Colors.white,
                            child:Padding(
                              padding: const EdgeInsets.all(2.0),
-                             child: Text("200000",style: TextStyle(fontSize: screenWidth*0.04),),
+                             child: Text(_recoverdCases.toString(), style: TextStyle(fontSize: screenWidth*0.04),),
                            )
                          ),
                        )
@@ -168,4 +236,17 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+class CovidData {
+  String Country;
+  int Confirmed = 0;
+  int Deaths = 0;
+  int Recovered = 0;
+  int Active = 0;
+  String Date = "";
+
+  CovidData({this.Country, this.Confirmed, this.Active, this.Date, this.Deaths, this.Recovered});
+
+
 }
