@@ -1,3 +1,4 @@
+import 'package:corona_tracker/Screens/StateList.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +26,7 @@ void getCovidStats() async {
         Confirmed: e['Confirmed'],
         Date: e['Date'],
         Deaths: e['Deaths'],
-        Recovered: e['Deaths']
+        Recovered: e['Recovered']
     )).toList();
 
     int recover = 0;
@@ -33,14 +34,14 @@ void getCovidStats() async {
     int affected = 0;
     int death = 0;
 
-    covid_data.forEach((value) => recover = recover + value.Recovered);
-    covid_data.forEach((value) => active = active + value.Active);
-    covid_data.forEach((value) => affected = affected + value.Confirmed);
-    covid_data.forEach((value) => death = death + value.Deaths);
+    covid_data.forEach((value) => recover = value.Recovered);
+    covid_data.forEach((value) => active = value.Active);
+    covid_data.forEach((value) => affected = value.Confirmed);
+    covid_data.forEach((value) => death = value.Deaths);
 
     setState(() {
       _recoverd = recover;
-      _confirmed = active;
+      _confirmed = affected;
     });
 
   }
@@ -200,7 +201,12 @@ void getCovidStats() async {
                  child: Container(
                    width: screenWidth*0.4,
                    child: MaterialButton(
-                     onPressed: (){},
+                     onPressed: (){
+                       Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Statelist()),
+                        );
+                     },
                      color: Colors.blue,
                      child: Text("State Data",style: GoogleFonts.varelaRound(color:Colors.white,fontSize: screenWidth*0.06),),
                      ),
