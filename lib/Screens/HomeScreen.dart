@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -9,6 +11,49 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+int _confirmed = 0;
+  int _recoverd = 0;
+
+void getCovidStats() async {
+    String url = "https://api.covid19api.com/country/india";
+    final response = await http.get(url);
+    final parsed = json.decode(response.body);
+
+    List<CovidData> covid_data = (parsed as List).map((e) => new CovidData(
+        Active: e['Active'],
+        Confirmed: e['Confirmed'],
+        Date: e['Date'],
+        Deaths: e['Deaths'],
+        Recovered: e['Deaths']
+    )).toList();
+
+    int recover = 0;
+    int active = 0;
+    int affected = 0;
+    int death = 0;
+
+    covid_data.forEach((value) => recover = recover + value.Recovered);
+    covid_data.forEach((value) => active = active + value.Active);
+    covid_data.forEach((value) => affected = affected + value.Confirmed);
+    covid_data.forEach((value) => death = death + value.Deaths);
+
+    setState(() {
+      _recoverd = recover;
+      _confirmed = active;
+    });
+
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCovidStats();
+    
+  }
+
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -108,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                            color: Colors.white,
                            child:Padding(
                              padding: const EdgeInsets.all(2.0),
-                             child: Text("200000",style: TextStyle(fontSize: screenWidth*0.04),),
+                             child: Text("${_confirmed}",style: TextStyle(fontSize: screenWidth*0.04),),
                            )
                          ),
                        )
@@ -136,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                            color: Colors.white,
                            child:Padding(
                              padding: const EdgeInsets.all(2.0),
-                             child: Text("200000",style: TextStyle(fontSize: screenWidth*0.04),),
+                             child: Text("${_recoverd}",style: TextStyle(fontSize: screenWidth*0.04),),
                            )
                          ),
                        )
@@ -169,3 +214,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+
+
+class CovidData {
+  
+  int Confirmed = 0;
+  int Deaths = 0;
+  int Recovered = 0;
+  int Active = 0;
+  String Date = "";
+
+  CovidData({this.Confirmed, this.Active, this.Date, this.Deaths, this.Recovered});
+
+
+} 	
