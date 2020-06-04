@@ -13,44 +13,27 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-int _confirmed = 0;
-  int _recoverd = 0;
+List data;
 
-void getCovidStats() async {
-    String url = "https://api.covid19api.com/country/india";
-    final response = await http.get(url);
-    final parsed = json.decode(response.body);
-
-    List<CovidData> covid_data = (parsed as List).map((e) => new CovidData(
-        Active: e['Active'],
-        Confirmed: e['Confirmed'],
-        Date: e['Date'],
-        Deaths: e['Deaths'],
-        Recovered: e['Recovered']
-    )).toList();
-
-    int recover = 0;
-    int active = 0;
-    int affected = 0;
-    int death = 0;
-
-    covid_data.forEach((value) => recover = value.Recovered);
-    covid_data.forEach((value) => active = value.Active);
-    covid_data.forEach((value) => affected = value.Confirmed);
-    covid_data.forEach((value) => death = value.Deaths);
+   Future<String> getJSONData() async {
+    var response = await http.get(
+      Uri.encodeFull("https://api.covid19india.org/data.json"),
+    );
 
     setState(() {
-      _recoverd = recover;
-      _confirmed = affected;
+      // Get the JSON data
+      
+      data = json.decode(response.body)['statewise'];
     });
 
+    return "Successfull";
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCovidStats();
+    getJSONData();
     
   }
 
@@ -154,7 +137,7 @@ void getCovidStats() async {
                            color: Colors.white,
                            child:Padding(
                              padding: const EdgeInsets.all(2.0),
-                             child: Text("${_confirmed}",style: TextStyle(fontSize: screenWidth*0.04),),
+                             child: Text(data[0]['confirmed'],style: TextStyle(fontSize: screenWidth*0.04),),
                            )
                          ),
                        )
@@ -182,7 +165,7 @@ void getCovidStats() async {
                            color: Colors.white,
                            child:Padding(
                              padding: const EdgeInsets.all(2.0),
-                             child: Text("${_recoverd}",style: TextStyle(fontSize: screenWidth*0.04),),
+                             child: Text(data[0]['recovered'],style: TextStyle(fontSize: screenWidth*0.04),),
                            )
                          ),
                        )
