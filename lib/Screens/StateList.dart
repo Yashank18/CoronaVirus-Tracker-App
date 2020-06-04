@@ -50,14 +50,52 @@ List data;
       body: Container(
         height: screenHeight,
         child: GridView.builder(
+          physics: BouncingScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: (orientation == Orientation.portrait) ? 2 : 3),
            itemCount: data == null ? 0 : data.length,
             itemBuilder: (c, i) {
               return Card(
                 child: GridTile(
-                  footer: Text(data[i]['confirmed'],textAlign: TextAlign.center,),
-                  child: Text(data[i]['state'],textAlign: TextAlign.center,style: GoogleFonts.varelaRound(fontSize: 20),),
+                  
+                  child: Column(
+                    children: <Widget>[
+                      
+                      data[i]['state'].toString().length>18 ?
+                      Text(data[i]['state'],textAlign: TextAlign.center,style: GoogleFonts.varelaRound(fontSize: 16,color:Colors.pink.shade600,fontWeight: FontWeight.w700),) :
+                                      Text(data[i]['state'],textAlign: TextAlign.center,style: GoogleFonts.varelaRound(fontSize: 20,color:Colors.pink.shade600,fontWeight: FontWeight.w700),),
+                      SizedBox(height: screenWidth*0.12,),
+                      Container(
+                       decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(6)
+                       ),
+                        child: Padding(
+                        padding: const EdgeInsets.only(left:5,right: 5),
+                        child: Text("Confirmed  - "+data[i]['confirmed'],textAlign: TextAlign.center,style: GoogleFonts.varelaRound(fontSize: 16,color: Colors.white),),
+                      )),
+                      SizedBox(height: screenWidth*0.03,),
+                      Container(
+                       decoration: BoxDecoration(
+                          color: Colors.yellow.shade700,
+                          borderRadius: BorderRadius.circular(6)
+                       ),
+                        child: Padding(
+                        padding: const EdgeInsets.only(left:5,right: 5),
+                        child: Text("Recovered  - "+data[i]['recovered'],textAlign: TextAlign.center,style: GoogleFonts.varelaRound(fontSize: 16),),
+                      )),
+                      SizedBox(height: screenWidth*0.03,),
+                      Container(
+                       decoration: BoxDecoration(
+                          color: Colors.blue.shade400,
+                          borderRadius: BorderRadius.circular(6)
+                       ),
+                        child: Padding(
+                        padding: const EdgeInsets.only(left:5,right: 5),
+                        child: Text("Deaths  - "+data[i]['deaths'],textAlign: TextAlign.center,style: GoogleFonts.varelaRound(fontSize: 16,color: Colors.white),),
+                      )),
+                    ],
+                  ),
                 ),
               );
             }
