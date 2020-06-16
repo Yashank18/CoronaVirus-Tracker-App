@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flare_flutter/flare_actor.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -53,7 +54,8 @@ List data;
          children: <Widget>[
            Column(
              children: <Widget>[
-               Image.asset("Images/covid.png",width: screenWidth*0.6),
+               Container(height:200,child: FlareActor('Images/corona.flr',animation: 'Bounce',))
+               //Image.asset("Images/covid.png",width: screenWidth*0.6),
              ],
            ),
            Padding(
